@@ -1,3 +1,3 @@
 # GuessNumberGame
 
-## 練習
+## 練習 123
