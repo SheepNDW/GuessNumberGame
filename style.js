@@ -12,50 +12,55 @@ let restartBtn;
 let max = 100;
 let min = 1;
 
-// checkWin (計數器 大or小 猜對or繼續 顯示已猜數字)
-function checkWin() {
-  let playerGuess = Number(guessField.value);
+// checkWin 檢查有沒有贏
+function checkWin(playerGuess) {
+  if (playerGuess === randomNum) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
+// 檢查它的範圍
+function range(playerGuess, randomNum) {
+  if (playerGuess > randomNum && playerGuess <= max) {
+    max = playerGuess;
+  } else if (playerGuess < randomNum && playerGuess >= min) {
+    min = playerGuess;
+  } else {
+    alert("你不能這麼做");
+    guessCount--;
+    guessField.value = "";
+    lowOrHi.textContent = "看清楚!," + min + "~" + max;
+  }
+}
+
+// 點擊function
+function guessClick() {
   if (guessCount === 1) {
     guess.textContent = "已猜的數字: ";
   }
+  let playerGuess = Number(guessField.value);
+  let win = checkWin(playerGuess);
 
-  if (playerGuess === randomNum) {
+  if (win) {
     lastResult.textContent = "答對了!";
     lastResult.style = "background-color: green";
     lowOrHi.textContent = "";
     gameOver();
-  } else if (guessCount === 10) {
-    lastResult.textContent = "GG思密達 下次再努力!";
-    lastResult.style = "background-color: red";
-    gameOver();
   } else {
-    lastResult.textContent = "答錯了 繼續加油!";
-    lastResult.style = "background-color: red";
-  }
-  // 新增範圍提醒&違規警示
-  if (playerGuess > randomNum) {
-    if (playerGuess <= max) {
-      max = playerGuess;
-      lowOrHi.textContent = "太大了," + min + "~" + max;
+    range(playerGuess, randomNum);
+    if (guessCount === 10) {
+      lastResult.textContent = "GG思密達 下次再努力!";
+      lastResult.style = "background-color: red";
+      gameOver();
     } else {
-      alert("你不能這麼做");
-      guessCount--;
-      guessField.value = "";
-      lowOrHi.textContent = "看清楚!," + min + "~" + max;
-    }
-  } else if (playerGuess < randomNum) {
-    if (playerGuess >= min) {
-      min = playerGuess;
-      lowOrHi.textContent = "猜小了," + min + "~" + max;
-    } else {
-      alert("你不能這麼做");
-      guessCount--;
-      guessField.value = "";
-      lowOrHi.textContent = "看清楚!," + min + "~" + max;
+      lastResult.textContent = "答錯了 繼續加油!";
+      lastResult.style = "background-color: red";
+      lowOrHi.textContent = "新的範圍是：" + min + "~" + max;
     }
   }
-  // 只讓符合條件的數字顯示
+
   if (playerGuess <= max && playerGuess >= min) {
     guess.textContent += playerGuess + "、";
   } else {
@@ -66,8 +71,8 @@ function checkWin() {
   guessField.focus();
 }
 
-// click
-guessSubmit.addEventListener("click", checkWin);
+// 呼叫click
+guessSubmit.addEventListener("click", guessClick);
 
 //gameOver
 function gameOver() {
